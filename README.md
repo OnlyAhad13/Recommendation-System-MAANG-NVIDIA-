@@ -91,44 +91,7 @@ Mixed: hybrid for better gradient signal.
 Multi-task Learning:
 Total loss:
 
-𝐿
-=
-𝐿
-𝑟
-𝑒
-𝑡
-𝑟
-𝑖
-𝑒
-𝑣
-𝑎
-𝑙
-+
-𝛼
-𝐿
-𝑟
-𝑎
-𝑡
-𝑖
-𝑛
-𝑔
-+
-𝛽
-𝐿
-𝑐
-𝑡
-𝑟
-L=L
-retrieval
-	​
-
-+αL
-rating
-	​
-
-+βL
-ctr
-	​
+L = L_retrieval + α * L_rating + β * L_ctr
 
 
 Evaluation:
@@ -146,6 +109,17 @@ MAP@K	Average precision across ranks
 MRR	Rank of first relevant item
 Coverage	Fraction of items exposed in recs
 Diversity	Item dissimilarity in a rec list
+Example Formulas (Plain-Text for GitHub)
+
+DCG@k:
+DCG@k = sum((2^rel_i - 1) / log2(i+1)) for i=1..k
+
+nDCG@k:
+nDCG@k = DCG@k / IDCG@k
+
+MRR:
+MRR = average(1 / rank_of_first_relevant_item)
+
 🧪 Usage
 1️⃣ Install Requirements
 pip install -r requirements.txt
@@ -179,9 +153,7 @@ recs = trainer.recommend(user_id="42", k=10)
 print(recs)
 
 🌐 Deployment with FastAPI + Docker
-
 FastAPI App (app/main.py):
-
 from fastapi import FastAPI
 import pickle, enterprise_recsys as recsys
 
@@ -201,9 +173,7 @@ def recommend(user_id: str, k: int = 10):
     recs = trainer.recommend(user_id=user_id, k=k)
     return {"user_id": user_id, "recommendations": recs}
 
-
 Dockerfile (app/Dockerfile):
-
 FROM python:3.9-slim
 
 WORKDIR /app
@@ -215,15 +185,11 @@ COPY . .
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 
-
 Build & Run:
-
 docker build -t recsys-app .
 docker run -p 8000:8000 recsys-app
 
-
 Test API:
-
 curl http://localhost:8000/recommend/42?k=10
 
 🛠 Future Work
