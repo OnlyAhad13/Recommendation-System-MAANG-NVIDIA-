@@ -1,62 +1,56 @@
-📚 Recommendation System — Enterprise-Scale (Retrieval + Ranking)
-🚀 Project Overview
+📚 Enterprise-Scale Recommendation System
+🚀 Overview
 
-This project implements an end-to-end recommendation system following the two-tower architecture for retrieval and Deep & Cross Networks (DCN) for ranking.
-It is designed to scale from academic datasets (MovieLens) to production-grade recommendation tasks.
+This project implements an end-to-end recommendation system using a two-tower retrieval model and a Deep & Cross Network (DCN) ranking model.
+It follows industry-standard practices from large-scale systems (YouTube, TikTok, Netflix) and is built for both research and production deployment.
 
-Key Features
+✨ Features
 
-Two-Stage Design:
+Two-Stage Architecture
 
-Retrieval: Efficient candidate generation using user/item embeddings.
+Retrieval: Multi-tower embeddings with dot-product similarity.
 
-Ranking: Precise ordering of candidates with feature interactions (DCN).
+Ranking: Deep & Cross Network (DCN) for feature interactions.
 
-Advanced Negative Sampling: Mixed strategy with random + hard negatives.
+Negative Sampling: Random, Hard, and Mixed strategies.
 
-Rich Feature Support: User & item categorical and numerical features.
+Feature Support: User & item categorical + numerical features.
 
 Evaluation Metrics: Recall@K, Precision@K, NDCG, MAP, MRR, Coverage, Diversity.
 
-Serving Ready: FAISS-based ANN retrieval for production, deployable with FastAPI & Docker.
+Serving Ready: FAISS-based ANN retrieval + FastAPI + Docker.
 
 📂 Project Structure
 .
-├── enterprise_recsys.py      # Core system code
-├── processed_data.pkl        # Preprocessed dataset (train/val/test splits)
-├── requirements.txt          # Dependencies
-├── app/                      # FastAPI serving app (to be added)
-│   ├── main.py
-│   ├── Dockerfile
-│   └── requirements.txt
-└── README.md                 # This documentation
+├── enterprise_recsys.py       # Core system code (retrieval, ranking, metrics, trainer)
+├── processed_data.pkl         # Preprocessed dataset (train/val/test splits)
+├── requirements.txt           # Dependencies
+├── app/                       # FastAPI app for deployment
+│   ├── main.py                # FastAPI entrypoint
+│   ├── Dockerfile             # Docker config
+│   └── requirements.txt       # API dependencies
+└── README.md                  # Project documentation
 
 🗂 Dataset
 
-We use MovieLens 100k/1M as the primary dataset (or any implicit feedback dataset).
-Preprocessing (via DataProcessor) includes:
+We use MovieLens (100k/1M) or any implicit feedback dataset.
 
-Renaming IDs & converting to string
+Preprocessing (via DataProcessor):
 
-Extracting temporal features (hour, day_of_week, weekend)
+Convert IDs to strings
 
-User stats: avg rating, rating std, count
+Extract time features (hour, day_of_week, is_weekend)
 
-Item stats: popularity, avg rating
+Compute user aggregates (avg rating, count, std)
 
-Scaling numerical features
+Compute item aggregates (popularity, avg rating)
 
-👉 In this repo, we provide processed_data.pkl, which contains:
+Scale numerical features
 
-train → Training DataFrame
-
-val → Validation DataFrame
-
-test → Test DataFrame
-
-You can load it directly:
+👉 A preprocessed dataset is included: processed_data.pkl
 
 import pickle
+
 with open("processed_data.pkl", "rb") as f:
     data = pickle.load(f)
 
@@ -64,41 +58,40 @@ train_df, val_df, test_df = data["train"], data["val"], data["test"]
 
 ⚙️ Training Pipeline
 
-Retrieval Model (MultiTower):
+Retrieval (MultiTower):
 
-User & Item towers → Embeddings in shared space.
+User & Item towers produce embeddings in a shared space.
 
 Similarity = dot product.
 
-Loss = retrieval loss with negative sampling.
+Loss = sampled softmax with negative sampling.
 
-Ranking Model (DCN):
+Ranking (DCN):
 
-Deep & Cross Network for explicit/nonlinear feature interactions.
+Deep & Cross Network learns explicit + nonlinear feature interactions.
 
-Predicts CTR/rating.
+Outputs CTR / rating prediction.
 
-Loss = combination of regression (MSE) and classification (BCE).
+Loss = MSE (ratings) + BCE (CTR).
 
 Negative Sampling:
 
-Random: uniform selection.
+Random → uniform negatives.
 
-Hard: most popular unseen items.
+Hard → popular unseen items.
 
-Mixed: hybrid for better gradient signal.
+Mixed → hybrid.
 
-Multi-task Learning:
-Total loss:
+Multi-task Objective:
 
 L = L_retrieval + α * L_rating + β * L_ctr
 
 
-Evaluation:
+Evaluation Metrics:
 
-Retrieval Metrics: Recall@K, Precision@K, MRR, MAP, NDCG.
+Retrieval: Recall@K, Precision@K, MAP, MRR, NDCG.
 
-Catalog Metrics: Coverage, Diversity.
+Catalog: Coverage, Diversity.
 
 📊 Metrics
 Metric	Purpose
@@ -109,15 +102,13 @@ MAP@K	Average precision across ranks
 MRR	Rank of first relevant item
 Coverage	Fraction of items exposed in recs
 Diversity	Item dissimilarity in a rec list
-Example Formulas (Plain-Text for GitHub)
 
-DCG@k:
-DCG@k = sum((2^rel_i - 1) / log2(i+1)) for i=1..k
+Example formulas (plain text for GitHub):
 
-nDCG@k:
+DCG@k = Σ (2^rel_i − 1) / log2(i+1)
+
 nDCG@k = DCG@k / IDCG@k
 
-MRR:
 MRR = average(1 / rank_of_first_relevant_item)
 
 🧪 Usage
@@ -152,14 +143,13 @@ print(metrics)
 recs = trainer.recommend(user_id="42", k=10)
 print(recs)
 
-🌐 Deployment with FastAPI + Docker
-FastAPI App (app/main.py):
+🌐 Deployment
+FastAPI App (app/main.py)
 from fastapi import FastAPI
 import pickle, enterprise_recsys as recsys
 
 app = FastAPI()
 
-# Load model
 with open("processed_data.pkl", "rb") as f:
     data = pickle.load(f)
 train_df, val_df, test_df = data["train"], data["val"], data["test"]
@@ -173,7 +163,7 @@ def recommend(user_id: str, k: int = 10):
     recs = trainer.recommend(user_id=user_id, k=k)
     return {"user_id": user_id, "recommendations": recs}
 
-Dockerfile (app/Dockerfile):
+Dockerfile (app/Dockerfile)
 FROM python:3.9-slim
 
 WORKDIR /app
@@ -185,33 +175,33 @@ COPY . .
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 
-Build & Run:
+Build & Run
 docker build -t recsys-app .
 docker run -p 8000:8000 recsys-app
 
-Test API:
+Test API
 curl http://localhost:8000/recommend/42?k=10
 
 🛠 Future Work
 
-Implement feature-based diversity with item embeddings.
+Add diversity using item embeddings (cosine dissimilarity).
 
-Integrate ANN search with FAISS/HNSWlib for large-scale serving.
+Integrate FAISS/HNSWlib for large-scale retrieval.
 
-Add session-based models (RNN/Transformer) for sequential recs.
+Extend with session-based (RNN/Transformer) models.
 
-Deploy to Kubernetes for auto-scaling.
+Deploy to Kubernetes for scaling.
 
 🏆 Summary
 
-This project implements an enterprise-grade recommender system:
+This project provides an enterprise-ready recommender system:
 
-Retrieval with MultiTower embeddings.
+Retrieval with MultiTower embeddings
 
-Ranking with Deep & Cross Networks.
+Ranking with DCN
 
-Rich evaluation metrics.
+Robust evaluation metrics
 
-Ready for production deployment with FastAPI & Docker.
+Ready for deployment via FastAPI + Docker
 
-It’s designed not just for research but to scale to MAANG/NVIDIA-level production use cases.
+Designed to scale to MAANG/NVIDIA-level production workloads.
