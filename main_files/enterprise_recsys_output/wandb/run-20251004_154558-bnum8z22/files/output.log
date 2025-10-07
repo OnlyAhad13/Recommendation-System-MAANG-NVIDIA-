@@ -1,0 +1,109 @@
+2025-10-04 15:46:00,035 - INFO - Starting enterprise-grade training pipeline...
+2025-10-04 15:46:00,036 - INFO - Loading data from ../movies_dataset/processed_data.pkl
+2025-10-04 15:46:00,104 - INFO - Preparing datasets...
+2025-10-04 15:46:00,104 - INFO - Engineering features for train data
+2025-10-04 15:46:02,118 - INFO - Engineering features for val data
+2025-10-04 15:46:02,336 - INFO - Engineering features for test data
+2025-10-04 15:46:02,561 - INFO - Fitting negative sampler...
+2025-10-04 15:46:05,861 - ERROR - Training failed: in user code:
+
+    File "/home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py", line 543, in None  *
+        lambda x: self.encoder(x)['item_embedding']
+    File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/keras/src/utils/traceback_utils.py", line 122, in error_handler  **
+        raise e.with_traceback(filtered_tb) from None
+    File "/home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py", line 487, in call
+        user_emb = self.user_embedding(self.user_lookup(features['user_id']))
+
+    KeyError: "Exception encountered when calling MultiTowerModel.call().\n\n\x1b[1muser_id\x1b[0m\n\nArguments received by MultiTowerModel.call():\n  • features={'movie_id': 'tf.Tensor(shape=(None,), dtype=string)'}\n  • training=None"
+
+Traceback (most recent call last):
+  File "/home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py", line 1255, in <module>
+    main()
+  File "/home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py", line 1243, in main
+    model, history = trainer.train(args.pickle_path)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py", line 789, in train
+    model = MultiTaskModel(
+            ^^^^^^^^^^^^^^^
+  File "/home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py", line 542, in __init__
+    ).map(
+      ^^^^
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/tensorflow/python/data/ops/dataset_ops.py", line 2341, in map
+    return map_op._map_v2(
+           ^^^^^^^^^^^^^^^
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/tensorflow/python/data/ops/map_op.py", line 43, in _map_v2
+    return _MapDataset(
+           ^^^^^^^^^^^^
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/tensorflow/python/data/ops/map_op.py", line 157, in __init__
+    self._map_func = structured_function.StructuredFunctionWrapper(
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/tensorflow/python/data/ops/structured_function.py", line 265, in __init__
+    self._function = fn_factory()
+                     ^^^^^^^^^^^^
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/tensorflow/python/eager/polymorphic_function/polymorphic_function.py", line 1256, in get_concrete_function
+    concrete = self._get_concrete_function_garbage_collected(*args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/tensorflow/python/eager/polymorphic_function/polymorphic_function.py", line 1226, in _get_concrete_function_garbage_collected
+    self._initialize(args, kwargs, add_initializers_to=initializers)
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/tensorflow/python/eager/polymorphic_function/polymorphic_function.py", line 696, in _initialize
+    self._concrete_variable_creation_fn = tracing_compilation.trace_function(
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/tensorflow/python/eager/polymorphic_function/tracing_compilation.py", line 178, in trace_function
+    concrete_function = _maybe_define_function(
+                        ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/tensorflow/python/eager/polymorphic_function/tracing_compilation.py", line 283, in _maybe_define_function
+    concrete_function = _create_concrete_function(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/tensorflow/python/eager/polymorphic_function/tracing_compilation.py", line 310, in _create_concrete_function
+    traced_func_graph = func_graph_module.func_graph_from_py_func(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/tensorflow/python/framework/func_graph.py", line 1060, in func_graph_from_py_func
+    func_outputs = python_func(*func_args, **func_kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/tensorflow/python/eager/polymorphic_function/polymorphic_function.py", line 599, in wrapped_fn
+    out = weak_wrapped_fn().__wrapped__(*args, **kwds)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/tensorflow/python/data/ops/structured_function.py", line 231, in wrapped_fn
+    ret = wrapper_helper(*args)
+          ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/tensorflow/python/data/ops/structured_function.py", line 161, in wrapper_helper
+    ret = autograph.tf_convert(self._func, ag_ctx)(*nested_args)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/tensorflow/python/autograph/impl/api.py", line 693, in wrapper
+    raise e.ag_error_metadata.to_exception(e)
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/tensorflow/python/autograph/impl/api.py", line 690, in wrapper
+    return converted_call(f, args, kwargs, options=options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/tensorflow/python/autograph/impl/api.py", line 439, in converted_call
+    result = converted_f(*effective_args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/__autograph_generated_filer4i4wm6d.py", line 6, in <lambda>
+    tf__lam = lambda x: ag__.with_function_scope(lambda lscope: ag__.converted_call(self.encoder, (x,), None, lscope)['item_embedding'], 'lscope', ag__.STD)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/tensorflow/python/autograph/core/function_wrappers.py", line 113, in with_function_scope
+    return thunk(scope)
+           ^^^^^^^^^^^^
+  File "/tmp/__autograph_generated_filer4i4wm6d.py", line 6, in <lambda>
+    tf__lam = lambda x: ag__.with_function_scope(lambda lscope: ag__.converted_call(self.encoder, (x,), None, lscope)['item_embedding'], 'lscope', ag__.STD)
+                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/tensorflow/python/autograph/impl/api.py", line 377, in converted_call
+    return _call_unconverted(f, args, kwargs, options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/tensorflow/python/autograph/impl/api.py", line 460, in _call_unconverted
+    return f(*args)
+           ^^^^^^^^
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/keras/src/utils/traceback_utils.py", line 122, in error_handler
+    raise e.with_traceback(filtered_tb) from None
+  File "/home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py", line 487, in call
+    user_emb = self.user_embedding(self.user_lookup(features['user_id']))
+                                                    ~~~~~~~~^^^^^^^^^^^
+tensorflow.python.autograph.pyct.error_utils.MultilineMessageKeyError: in user code:
+
+    File "/home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py", line 543, in None  *
+        lambda x: self.encoder(x)['item_embedding']
+    File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/keras/src/utils/traceback_utils.py", line 122, in error_handler  **
+        raise e.with_traceback(filtered_tb) from None
+    File "/home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py", line 487, in call
+        user_emb = self.user_embedding(self.user_lookup(features['user_id']))
+
+    KeyError: "Exception encountered when calling MultiTowerModel.call().\n\n\x1b[1muser_id\x1b[0m\n\nArguments received by MultiTowerModel.call():\n  • features={'movie_id': 'tf.Tensor(shape=(None,), dtype=string)'}\n  • training=None"

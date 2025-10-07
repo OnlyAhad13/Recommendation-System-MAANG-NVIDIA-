@@ -1,0 +1,38 @@
+2025-10-04 17:46:17,816 - INFO - ================================================================================
+2025-10-04 17:46:17,817 - INFO - STARTING TRAINING
+2025-10-04 17:46:17,817 - INFO - ================================================================================
+2025-10-04 17:46:17,817 - INFO - Loading data from ../movies_dataset/processed_data.pkl
+2025-10-04 17:46:17,888 - INFO - Preparing datasets...
+2025-10-04 17:46:17,888 - INFO - Engineering features for train - Shape: (800167, 15)
+2025-10-04 17:46:19,952 - INFO - Engineering features for val - Shape: (100020, 15)
+[34m[1mwandb[0m: [33mWARNING[0m WandbCallback is deprecated and will be removed in a future release. Please use the WandbMetricsLogger, WandbModelCheckpoint, and WandbEvalCallback callbacks instead. See https://docs.wandb.ai/guides/integrations/keras for more information.
+2025-10-04 17:46:20,893 - INFO - Training for 5 epochs...
+Epoch 1/5
+/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/keras/src/layers/layer.py:396: UserWarning: `build()` was called on layer 'multi_tower_model', however the layer does not have a `build()` method implemented and it looks like it has unbuilt state. This will cause the layer to be marked as built, despite not being actually built, which may cause failures down the line. Make sure to implement a proper `build()` method.
+  warnings.warn(
+/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/keras/src/layers/layer.py:396: UserWarning: `build()` was called on layer 'multi_task_model', however the layer does not have a `build()` method implemented and it looks like it has unbuilt state. This will cause the layer to be marked as built, despite not being actually built, which may cause failures down the line. Make sure to implement a proper `build()` method.
+  warnings.warn(
+[1m196/196[0m [32m━━━━━━━━━━━━━━━━━━━━[0m[37m[0m [1m0s[0m 421ms/step - binary_accuracy: 0.5381 - loss: 2215118.5000 - regularization_loss: 0.0054 - root_mean_squared_error: 2134.2126 - total_loss: 2215118.5000
+Epoch 1: val_loss improved from inf to 12795.64355, saving model to output/best_model.keras
+2025-10-04 17:47:53,089 - INFO - Epoch 1: 92.1s | Loss: 14884.5547 | Mem: 1624MB
+[1m196/196[0m [32m━━━━━━━━━━━━━━━━━━━━[0m[37m[0m [1m92s[0m 449ms/step - binary_accuracy: 0.5381 - loss: 2203949.7500 - regularization_loss: 0.0054 - root_mean_squared_error: 2132.3220 - total_loss: 2203949.7500 - val_binary_accuracy: 0.5780 - val_loss: 12795.6436 - val_regularization_loss: 0.0056 - val_root_mean_squared_error: 1.9384 - val_total_loss: 12795.6494 - learning_rate: 0.0100
+Epoch 2/5
+[1m196/196[0m [32m━━━━━━━━━━━━━━━━━━━━[0m[37m[0m [1m0s[0m 478ms/step - binary_accuracy: 0.5410 - loss: 48938.2969 - regularization_loss: 0.0057 - root_mean_squared_error: 86.9122 - total_loss: 48938.3008
+Epoch 2: val_loss did not improve from 12795.64355
+2025-10-04 17:49:31,359 - INFO - Epoch 2: 98.2s | Loss: 13767.6924 | Mem: 1640MB
+[1m196/196[0m [32m━━━━━━━━━━━━━━━━━━━━[0m[37m[0m [1m98s[0m 501ms/step - binary_accuracy: 0.5410 - loss: 48759.7656 - regularization_loss: 0.0057 - root_mean_squared_error: 86.7939 - total_loss: 48759.7695 - val_binary_accuracy: 0.5787 - val_loss: 12899.2803 - val_regularization_loss: 0.0057 - val_root_mean_squared_error: 1.7282 - val_total_loss: 12899.2861 - learning_rate: 0.0100
+Epoch 3/5
+[1m196/196[0m [32m━━━━━━━━━━━━━━━━━━━━[0m[37m[0m [1m0s[0m 464ms/step - binary_accuracy: 0.5533 - loss: 45444.3281 - regularization_loss: 0.0057 - root_mean_squared_error: 43.9942 - total_loss: 45444.3320
+2025-10-04 17:51:07,575 - ERROR - Training failed: This optimizer was created with a `LearningRateSchedule` object as its `learning_rate` constructor argument, hence its learning rate is not settable. If you need the learning rate to be settable, you should instantiate the optimizer with a float `learning_rate` argument.
+Traceback (most recent call last):
+  File "/home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py", line 703, in main
+    model, history = trainer.train(args.pickle_path)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py", line 527, in train
+    history = model.fit(datasets['train_ds'], validation_data=datasets['val_ds'],
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/keras/src/utils/traceback_utils.py", line 122, in error_handler
+    raise e.with_traceback(filtered_tb) from None
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/keras/src/optimizers/base_optimizer.py", line 636, in learning_rate
+    raise TypeError(
+TypeError: This optimizer was created with a `LearningRateSchedule` object as its `learning_rate` constructor argument, hence its learning rate is not settable. If you need the learning rate to be settable, you should instantiate the optimizer with a float `learning_rate` argument.

@@ -1,0 +1,44 @@
+{
+  "os":  "Linux-6.14.0-33-generic-x86_64-with-glibc2.39",
+  "python":  "CPython 3.11.11",
+  "startedAt":  "2025-10-04T10:48:44.236236Z",
+  "args":  [
+    "--pickle_path",
+    "../movies_dataset/processed_data.pkl"
+  ],
+  "program":  "/home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py",
+  "codePath":  "main_files/recommendation_system.py",
+  "codePathLocal":  "recommendation_system.py",
+  "git":  {
+    "remote":  "https://github.com/OnlyAhad13/Recommendation-System-MAANG-NVIDIA-.git",
+    "commit":  "11eb5547a311ac12d5ebd3e413f2bd32032a2aa6"
+  },
+  "email":  "abdulahad17100@gmail.com",
+  "root":  "enterprise_recsys_output",
+  "host":  "OnlyAhad",
+  "executable":  "/home/onlyahad/miniconda3/envs/ml_global/bin/python",
+  "cpu_count":  2,
+  "cpu_count_logical":  4,
+  "gpu":  "NVIDIA GeForce 920MX",
+  "gpu_count":  1,
+  "disk":  {
+    "/":  {
+      "total":  "128915435520",
+      "used":  "91042275328"
+    }
+  },
+  "memory":  {
+    "total":  "20868657152"
+  },
+  "gpu_nvidia":  [
+    {
+      "name":  "NVIDIA GeForce 920MX",
+      "memoryTotal":  "2147483648",
+      "cudaCores":  256,
+      "architecture":  "Maxwell",
+      "uuid":  "GPU-5f89661c-e007-9fe8-22c3-b87f2fa04619"
+    }
+  ],
+  "cudaVersion":  "12.4",
+  "writerId":  "s2xie0p56l4ss0fuhtbmk8dc1wnj7nqp"
+}

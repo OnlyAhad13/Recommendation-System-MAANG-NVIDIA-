@@ -1,0 +1,38 @@
+{
+  "embedding_dim": 128,
+  "user_tower_dims": [
+    256,
+    128
+  ],
+  "item_tower_dims": [
+    256,
+    128
+  ],
+  "cross_layers": 3,
+  "dnn_dims": [
+    256,
+    128,
+    64
+  ],
+  "dropout_rate": 0.2,
+  "l2_reg": 1e-05,
+  "batch_size": 4096,
+  "learning_rate_retrieval": 0.01,
+  "learning_rate_ranking": 0.001,
+  "epochs_retrieval": 5,
+  "epochs_ranking": 5,
+  "warmup_steps": 1000,
+  "num_hard_negatives": 5,
+  "num_random_negatives": 50,
+  "negative_sampling_strategy": "mixed",
+  "ctr_weight": 0.3,
+  "rating_weight": 0.7,
+  "eval_topk": [
+    5,
+    10,
+    20,
+    50
+  ],
+  "mixed_precision": true,
+  "distributed_strategy": "none"
+}

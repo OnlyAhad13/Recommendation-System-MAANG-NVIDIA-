@@ -1,0 +1,35 @@
+2025-10-04 17:44:13,552 - INFO - ================================================================================
+2025-10-04 17:44:13,552 - INFO - STARTING TRAINING
+2025-10-04 17:44:13,553 - INFO - ================================================================================
+2025-10-04 17:44:13,553 - INFO - Loading data from ../movies_dataset/processed_data.pkl
+2025-10-04 17:44:13,625 - INFO - Preparing datasets...
+2025-10-04 17:44:13,625 - INFO - Engineering features for train - Shape: (800167, 15)
+2025-10-04 17:44:15,703 - INFO - Engineering features for val - Shape: (100020, 15)
+2025-10-04 17:44:16,635 - ERROR - Training failed: Cannot convert '('c', 'o', 'u', 'n', 't', 'e', 'r')' to a shape. Found invalid entry 'c' of type '<class 'str'>'.
+Traceback (most recent call last):
+  File "/home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py", line 702, in main
+    model, history = trainer.train(args.pickle_path)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py", line 503, in train
+    model = MultiTaskModel(self.config, datasets['user_vocab'],
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py", line 369, in __init__
+    metrics=tfrs.metrics.FactorizedTopK(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/tensorflow_recommenders/metrics/factorized_top_k.py", line 79, in __init__
+    layers.factorized_top_k.Streaming(k=max(ks))
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/tensorflow_recommenders/layers/factorized_top_k.py", line 376, in __init__
+    self._counter = self.add_weight("counter", dtype=tf.int32, trainable=False)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/keras/src/layers/layer.py", line 547, in add_weight
+    variable = backend.Variable(
+               ^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/keras/src/backend/common/variables.py", line 185, in __init__
+    self._shape = self._validate_shape(shape)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/keras/src/backend/common/variables.py", line 207, in _validate_shape
+    shape = standardize_shape(shape)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/keras/src/backend/common/variables.py", line 582, in standardize_shape
+    raise ValueError(
+ValueError: Cannot convert '('c', 'o', 'u', 'n', 't', 'e', 'r')' to a shape. Found invalid entry 'c' of type '<class 'str'>'.

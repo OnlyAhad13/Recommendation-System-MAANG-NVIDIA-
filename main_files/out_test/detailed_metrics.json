@@ -1,0 +1,19 @@
+[
+  {
+    "epoch": 0,
+    "timestamp": 1759581021.4008877,
+    "memory_usage_mb": 2419.83984375,
+    "cpu_percent": 86.5,
+    "auc": NaN,
+    "loss": 14.500173568725586,
+    "regularization_loss": 0.019084976986050606,
+    "root_mean_squared_error": NaN,
+    "total_loss": 14.519258499145508,
+    "val_auc": 0.5863666534423828,
+    "val_loss": 15.409255027770996,
+    "val_regularization_loss": 0.019084976986050606,
+    "val_root_mean_squared_error": NaN,
+    "val_total_loss": 15.428339958190918,
+    "learning_rate": 0.000884735956788063
+  }
+]

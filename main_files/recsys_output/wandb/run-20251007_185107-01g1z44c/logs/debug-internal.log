@@ -1,0 +1,16 @@
+{"time":"2025-10-07T18:51:08.413997183+05:00","level":"INFO","msg":"stream: starting","core version":"0.22.0"}
+{"time":"2025-10-07T18:51:09.167269157+05:00","level":"INFO","msg":"stream: created new stream","id":"01g1z44c"}
+{"time":"2025-10-07T18:51:09.167289646+05:00","level":"INFO","msg":"stream: started","id":"01g1z44c"}
+{"time":"2025-10-07T18:51:09.167301185+05:00","level":"INFO","msg":"writer: started","stream_id":"01g1z44c"}
+{"time":"2025-10-07T18:51:09.167316422+05:00","level":"INFO","msg":"handler: started","stream_id":"01g1z44c"}
+{"time":"2025-10-07T18:51:09.167324496+05:00","level":"INFO","msg":"sender: started","stream_id":"01g1z44c"}
+{"time":"2025-10-07T18:52:39.769698312+05:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/graphql\": context deadline exceeded (Client.Timeout exceeded while awaiting headers)"}
+{"time":"2025-10-07T18:55:09.775185101+05:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/graphql\": context deadline exceeded"}
+{"time":"2025-10-07T18:55:41.788326305+05:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/graphql\": net/http: request canceled (Client.Timeout exceeded while awaiting headers)"}
+{"time":"2025-10-07T18:55:51.473080113+05:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading summary","runtime_seconds":0.005943161},{"desc":"updating run metadata","runtime_seconds":0.000451771}],"total_operations":2}}
+{"time":"2025-10-07T18:55:51.473217729+05:00","level":"ERROR","msg":"sender: sendSystemMetrics called after exit"}
+{"time":"2025-10-07T18:55:53.514414753+05:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-10-07T18:55:54.05598973+05:00","level":"INFO","msg":"stream: closing","id":"01g1z44c"}
+{"time":"2025-10-07T18:55:54.056018545+05:00","level":"INFO","msg":"handler: closed","stream_id":"01g1z44c"}
+{"time":"2025-10-07T18:55:54.056061415+05:00","level":"INFO","msg":"sender: closed","stream_id":"01g1z44c"}
+{"time":"2025-10-07T18:55:54.056068358+05:00","level":"INFO","msg":"stream: closed","id":"01g1z44c"}

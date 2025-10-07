@@ -1,0 +1,21 @@
+2025-10-04 12:05:41,350 - INFO - Starting enterprise-grade training pipeline...
+2025-10-04 12:05:41,351 - INFO - Loading data from ../movies_dataset/processed_data.pkl
+2025-10-04 12:05:41,494 - INFO - Preparing datasets...
+2025-10-04 12:05:41,494 - INFO - Engineering features for train data
+2025-10-04 12:05:42,962 - ERROR - Training failed: 'dict' object has no attribute 'empty'
+Traceback (most recent call last):
+  File "/home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py", line 1281, in <module>
+    main()
+  File "/home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py", line 1269, in main
+    model, history = trainer.train(args.pickle_path)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py", line 808, in train
+    datasets = self.prepare_datasets(data)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py", line 706, in prepare_datasets
+    train_df = self.data_processor.engineer_features(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py", line 224, in engineer_features
+    if not user_features.empty:
+           ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'dict' object has no attribute 'empty'

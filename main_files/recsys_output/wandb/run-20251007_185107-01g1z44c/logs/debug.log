@@ -1,0 +1,26 @@
+2025-10-07 18:51:07,170 INFO    MainThread:14300 [wandb_setup.py:_flush():81] Current SDK version is 0.22.0
+2025-10-07 18:51:07,170 INFO    MainThread:14300 [wandb_setup.py:_flush():81] Configure stats pid to 14300
+2025-10-07 18:51:07,170 INFO    MainThread:14300 [wandb_setup.py:_flush():81] Loading settings from /home/onlyahad/.config/wandb/settings
+2025-10-07 18:51:07,170 INFO    MainThread:14300 [wandb_setup.py:_flush():81] Loading settings from /home/onlyahad/Desktop/Recommendation System/main_files/wandb/settings
+2025-10-07 18:51:07,170 INFO    MainThread:14300 [wandb_setup.py:_flush():81] Loading settings from environment variables
+2025-10-07 18:51:07,170 INFO    MainThread:14300 [wandb_init.py:setup_run_log_directory():686] Logging user logs to recsys_output/wandb/run-20251007_185107-01g1z44c/logs/debug.log
+2025-10-07 18:51:07,170 INFO    MainThread:14300 [wandb_init.py:setup_run_log_directory():687] Logging internal logs to recsys_output/wandb/run-20251007_185107-01g1z44c/logs/debug-internal.log
+2025-10-07 18:51:07,170 INFO    MainThread:14300 [wandb_init.py:init():813] calling init triggers
+2025-10-07 18:51:07,170 INFO    MainThread:14300 [wandb_init.py:init():818] wandb.init called with sweep_config: {}
+config: {'embedding_dim': 128, 'user_tower_dims': [256, 128], 'item_tower_dims': [256, 128], 'cross_layers': 3, 'dnn_dims': [256, 128, 64], 'dropout_rate': 0.2, 'l2_reg': 1e-05, 'batch_size': 4096, 'learning_rate_retrieval': 0.01, 'learning_rate_ranking': 0.001, 'epochs_retrieval': 5, 'epochs_ranking': 5, 'warmup_steps': 1000, 'num_hard_negatives': 5, 'num_random_negatives': 50, 'negative_sampling_strategy': 'mixed', 'ctr_weight': 0.3, 'rating_weight': 0.7, 'eval_topk': [5, 10, 20, 50], 'mixed_precision': True, 'distributed_strategy': 'none', '_wandb': {}}
+2025-10-07 18:51:07,170 INFO    MainThread:14300 [wandb_init.py:init():861] starting backend
+2025-10-07 18:51:08,387 INFO    MainThread:14300 [wandb_init.py:init():864] sending inform_init request
+2025-10-07 18:51:08,395 INFO    MainThread:14300 [wandb_init.py:init():872] backend started and connected
+2025-10-07 18:51:08,396 INFO    MainThread:14300 [wandb_init.py:init():942] updated telemetry
+2025-10-07 18:51:08,404 INFO    MainThread:14300 [wandb_init.py:init():966] communicating run to backend with 90.0 second timeout
+2025-10-07 18:51:09,580 INFO    MainThread:14300 [wandb_init.py:init():1017] starting run threads in backend
+2025-10-07 18:51:09,768 INFO    MainThread:14300 [wandb_run.py:_console_start():2506] atexit reg
+2025-10-07 18:51:09,768 INFO    MainThread:14300 [wandb_run.py:_redirect():2354] redirect: wrap_raw
+2025-10-07 18:51:09,768 INFO    MainThread:14300 [wandb_run.py:_redirect():2423] Wrapping output streams.
+2025-10-07 18:51:09,768 INFO    MainThread:14300 [wandb_run.py:_redirect():2446] Redirects installed.
+2025-10-07 18:51:09,773 INFO    MainThread:14300 [wandb_init.py:init():1057] run started, returning control to user process
+2025-10-07 18:55:40,057 INFO    MainThread:14300 [wandb_run.py:_finish():2272] finishing run syed_ahad13-nust/enterprise-recsys/01g1z44c
+2025-10-07 18:55:40,058 INFO    MainThread:14300 [wandb_run.py:_atexit_cleanup():2471] got exitcode: 0
+2025-10-07 18:55:40,059 INFO    MainThread:14300 [wandb_run.py:_restore():2453] restore
+2025-10-07 18:55:40,059 INFO    MainThread:14300 [wandb_run.py:_restore():2459] restore done
+2025-10-07 18:55:54,053 INFO    MainThread:14300 [wandb_run.py:_footer_sync_info():3867] logging synced files

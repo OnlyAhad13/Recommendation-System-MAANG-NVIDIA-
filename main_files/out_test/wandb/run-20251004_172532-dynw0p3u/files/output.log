@@ -1,0 +1,37 @@
+2025-10-04 17:25:33,771 - INFO - Starting enterprise-grade training pipeline...
+2025-10-04 17:25:33,771 - INFO - Loading data from ../movies_dataset/processed_data.pkl
+2025-10-04 17:25:33,840 - INFO - Preparing datasets...
+2025-10-04 17:25:33,840 - INFO - Engineering features for train data
+2025-10-04 17:25:36,012 - INFO - Engineering features for val data
+2025-10-04 17:25:36,233 - INFO - Engineering features for test data
+2025-10-04 17:25:36,459 - INFO - Fitting negative sampler...
+[34m[1mwandb[0m: [33mWARNING[0m WandbCallback is deprecated and will be removed in a future release. Please use the WandbMetricsLogger, WandbModelCheckpoint, and WandbEvalCallback callbacks instead. See https://docs.wandb.ai/guides/integrations/keras for more information.
+2025-10-04 17:25:39,650 - INFO - Starting model training...
+
+Epoch 1: val_loss improved from inf to 15.40926, saving model to out_test/best_model.keras
+3126/3126 - 280s - 89ms/step - auc: nan - loss: 14.5002 - regularization_loss: 0.0191 - root_mean_squared_error: nan - total_loss: 14.5193 - val_auc: 0.5864 - val_loss: 15.4093 - val_regularization_loss: 0.0191 - val_root_mean_squared_error: nan - val_total_loss: 15.4283 - learning_rate: 8.8474e-04
+Restoring model weights from the end of the best epoch: 1.
+2025-10-04 17:30:21,466 - INFO - Starting comprehensive evaluation...
+2025-10-04 17:30:41,353 - INFO - Building item embedding matrix...
+2025-10-04 17:30:41,354 - ERROR - Training failed: "Exception encountered when calling MultiTowerModel.call().\n\n\x1b[1muser_id\x1b[0m\n\nArguments received by MultiTowerModel.call():\n  • features={'movie_id': 'tf.Tensor(shape=(1000,), dtype=string)'}\n  • training=False"
+Traceback (most recent call last):
+  File "/home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py", line 1263, in <module>
+    if __name__ == "__main__":
+        ^^^^^^
+  File "/home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py", line 1251, in main
+    try:
+
+  File "/home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py", line 829, in train
+    # Comprehensive evaluation
+  File "/home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py", line 920, in _comprehensive_evaluation
+    # Build item embedding matrix for retrieval evaluation
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py", line 974, in _build_item_embedding_matrix
+    # Get item embeddings
+                 ^^^^^^^^^
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/keras/src/utils/traceback_utils.py", line 122, in error_handler
+    raise e.with_traceback(filtered_tb) from None
+  File "/home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py", line 487, in call
+    # User tower
+
+KeyError: "Exception encountered when calling MultiTowerModel.call().\n\n\x1b[1muser_id\x1b[0m\n\nArguments received by MultiTowerModel.call():\n  • features={'movie_id': 'tf.Tensor(shape=(1000,), dtype=string)'}\n  • training=False"

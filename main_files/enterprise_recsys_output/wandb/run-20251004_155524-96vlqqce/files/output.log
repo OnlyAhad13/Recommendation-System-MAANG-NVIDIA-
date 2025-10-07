@@ -1,0 +1,23 @@
+2025-10-04 15:55:25,506 - INFO - Starting enterprise-grade training pipeline...
+2025-10-04 15:55:25,506 - INFO - Loading data from ../movies_dataset/processed_data.pkl
+2025-10-04 15:55:25,576 - INFO - Preparing datasets...
+2025-10-04 15:55:25,576 - INFO - Engineering features for train data
+2025-10-04 15:55:27,580 - INFO - Engineering features for val data
+2025-10-04 15:55:27,800 - INFO - Engineering features for test data
+2025-10-04 15:55:28,020 - INFO - Fitting negative sampler...
+2025-10-04 15:55:31,297 - ERROR - Training failed: The filepath provided must end in `.keras` (Keras model format). Received: filepath=enterprise_recsys_output/best_model
+Traceback (most recent call last):
+  File "/home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py", line 1251, in <module>
+    main()
+  File "/home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py", line 1239, in main
+    model, history = trainer.train(args.pickle_path)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py", line 804, in train
+    callbacks = self._setup_callbacks()
+                ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py", line 851, in _setup_callbacks
+    callbacks.append(keras.callbacks.ModelCheckpoint(
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onlyahad/miniconda3/envs/ml_global/lib/python3.11/site-packages/keras/src/callbacks/model_checkpoint.py", line 194, in __init__
+    raise ValueError(
+ValueError: The filepath provided must end in `.keras` (Keras model format). Received: filepath=enterprise_recsys_output/best_model

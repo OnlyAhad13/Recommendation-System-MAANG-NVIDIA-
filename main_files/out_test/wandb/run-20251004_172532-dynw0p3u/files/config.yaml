@@ -1,0 +1,131 @@
+_wandb:
+    value:
+        cli_version: 0.22.0
+        e:
+            8zpr9onkfy2jeq9tgmj283huoxtrgv6u:
+                args:
+                    - --pickle_path
+                    - ../movies_dataset/processed_data.pkl
+                    - --output_dir
+                    - ./out_test
+                    - --batch_size
+                    - "256"
+                    - --epochs_retrieval
+                    - "1"
+                    - --epochs_ranking
+                    - "1"
+                codePath: main_files/recommendation_system.py
+                codePathLocal: recommendation_system.py
+                cpu_count: 2
+                cpu_count_logical: 4
+                cudaVersion: "12.4"
+                disk:
+                    /:
+                        total: "128915435520"
+                        used: "91106418688"
+                email: abdulahad17100@gmail.com
+                executable: /home/onlyahad/miniconda3/envs/ml_global/bin/python
+                git:
+                    commit: 11eb5547a311ac12d5ebd3e413f2bd32032a2aa6
+                    remote: https://github.com/OnlyAhad13/Recommendation-System-MAANG-NVIDIA-.git
+                gpu: NVIDIA GeForce 920MX
+                gpu_count: 1
+                gpu_nvidia:
+                    - architecture: Maxwell
+                      cudaCores: 256
+                      memoryTotal: "2147483648"
+                      name: NVIDIA GeForce 920MX
+                      uuid: GPU-5f89661c-e007-9fe8-22c3-b87f2fa04619
+                host: OnlyAhad
+                memory:
+                    total: "20868657152"
+                os: Linux-6.14.0-33-generic-x86_64-with-glibc2.39
+                program: /home/onlyahad/Desktop/Recommendation System/main_files/recommendation_system.py
+                python: CPython 3.11.11
+                root: out_test
+                startedAt: "2025-10-04T12:25:32.573519Z"
+                writerId: 8zpr9onkfy2jeq9tgmj283huoxtrgv6u
+        m: []
+        python_version: 3.11.11
+        t:
+            "1":
+                - 2
+                - 3
+                - 5
+                - 53
+                - 105
+            "2":
+                - 2
+                - 3
+                - 5
+                - 53
+                - 105
+            "3":
+                - 3
+                - 8
+                - 16
+                - 62
+            "4": 3.11.11
+            "5": 0.22.0
+            "10":
+                - 17
+            "12": 0.22.0
+            "13": linux-x86_64
+batch_size:
+    value: 256
+cross_layers:
+    value: 3
+ctr_weight:
+    value: 0.5
+distributed_strategy:
+    value: mirrored
+dnn_dims:
+    value:
+        - 512
+        - 256
+        - 128
+        - 64
+dropout_rate:
+    value: 0.2
+embedding_dim:
+    value: 128
+epochs_ranking:
+    value: 1
+epochs_retrieval:
+    value: 1
+eval_topk:
+    value:
+        - 1
+        - 5
+        - 10
+        - 20
+        - 50
+        - 100
+item_tower_dims:
+    value:
+        - 512
+        - 256
+        - 128
+l2_reg:
+    value: 1e-05
+learning_rate_ranking:
+    value: 0.001
+learning_rate_retrieval:
+    value: 0.001
+mixed_precision:
+    value: true
+negative_sampling_strategy:
+    value: mixed
+num_hard_negatives:
+    value: 5
+num_random_negatives:
+    value: 100
+rating_weight:
+    value: 0.5
+user_tower_dims:
+    value:
+        - 512
+        - 256
+        - 128
+warmup_steps:
+    value: 1000

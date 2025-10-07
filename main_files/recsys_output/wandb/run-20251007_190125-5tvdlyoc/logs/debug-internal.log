@@ -1,0 +1,12 @@
+{"time":"2025-10-07T19:01:25.251987179+05:00","level":"INFO","msg":"stream: starting","core version":"0.22.0"}
+{"time":"2025-10-07T19:01:25.834523915+05:00","level":"INFO","msg":"stream: created new stream","id":"5tvdlyoc"}
+{"time":"2025-10-07T19:01:25.834552663+05:00","level":"INFO","msg":"stream: started","id":"5tvdlyoc"}
+{"time":"2025-10-07T19:01:25.835315145+05:00","level":"INFO","msg":"writer: started","stream_id":"5tvdlyoc"}
+{"time":"2025-10-07T19:01:25.835525197+05:00","level":"INFO","msg":"handler: started","stream_id":"5tvdlyoc"}
+{"time":"2025-10-07T19:01:25.835559092+05:00","level":"INFO","msg":"sender: started","stream_id":"5tvdlyoc"}
+{"time":"2025-10-07T19:10:05.176090827+05:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"updating run metadata","runtime_seconds":0.001624942}],"total_operations":1}}
+{"time":"2025-10-07T19:10:06.500413186+05:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-10-07T19:10:06.921600203+05:00","level":"INFO","msg":"stream: closing","id":"5tvdlyoc"}
+{"time":"2025-10-07T19:10:06.921621925+05:00","level":"INFO","msg":"handler: closed","stream_id":"5tvdlyoc"}
+{"time":"2025-10-07T19:10:06.921702168+05:00","level":"INFO","msg":"sender: closed","stream_id":"5tvdlyoc"}
+{"time":"2025-10-07T19:10:06.921717205+05:00","level":"INFO","msg":"stream: closed","id":"5tvdlyoc"}
