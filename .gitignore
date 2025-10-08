@@ -1,3 +1,75 @@
+# Data files
+data/processed/
+*.pkl
+*.csv
+
+# Model outputs
+outputs/
+main_files/enterprise_recsys_output/
+main_files/out_test/
+main_files/output/
+main_files/recsys_output/
+*.keras
+*.h5
+*.weights.h5
+*.index
+*.ckpt
+
+# Logs and artifacts
+logs/
+*.log
+wandb/
+*.tfevents.*
+training_log.csv
+detailed_metrics.json
+metrics.json
+
+# FAISS indices
+*.idx
+faiss.idx
+item_map.json
+vocabs.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+*.whl
+
+# Virtual environments
+env/
+venv/
+.venv
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
 # Large files (>= 100MB)
 movies_dataset/processed_data.pkl
-

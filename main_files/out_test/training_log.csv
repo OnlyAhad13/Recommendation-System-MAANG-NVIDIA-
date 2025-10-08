@@ -1,2 +1,0 @@
-epoch,auc,learning_rate,loss,regularization_loss,root_mean_squared_error,total_loss,val_auc,val_loss,val_regularization_loss,val_root_mean_squared_error,val_total_loss
-0,nan,0.000884735956788063,14.500173568725586,0.019084976986050606,nan,14.519258499145508,0.5863666534423828,15.409255027770996,0.019084976986050606,nan,15.428339958190918

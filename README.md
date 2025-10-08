@@ -1,250 +1,365 @@
-# 📚 Enterprise-Scale Recommendation System
+# 🎬 Enterprise-Scale Recommendation System
 
-## 🚀 Overview
-
-This project implements an end-to-end recommendation system using a **two-tower retrieval model** and a **Deep & Cross Network (DCN)** ranking model. It follows industry-standard practices from large-scale systems (YouTube, TikTok, Netflix) and is built for both research and production deployment.
+A production-ready recommendation system using **two-tower retrieval** and **Deep & Cross Network (DCN)** ranking models. Built following industry best practices from systems like YouTube, Netflix, and TikTok.
 
 ---
 
-## ✨ Features
+## 🚀 Features
 
 ### Two-Stage Architecture
-- **Retrieval**: Multi-tower embeddings with dot-product similarity
-- **Ranking**: Deep & Cross Network (DCN) for feature interactions
+- **Retrieval Stage**: Multi-tower embeddings with dot-product similarity
+- **Ranking Stage**: Deep & Cross Network (DCN) for feature interactions
 
 ### Advanced Capabilities
-- **Negative Sampling**: Random, Hard, and Mixed strategies
-- **Feature Support**: User & item categorical + numerical features
-- **Evaluation Metrics**: Recall@K, Precision@K, NDCG, MAP, MRR, Coverage, Diversity
-- **Serving Ready**: FAISS-based ANN retrieval + FastAPI + Docker
+- ✅ Multiple negative sampling strategies (Random, Hard, Mixed)
+- ✅ Rich feature engineering (user/item statistics, temporal features)
+- ✅ Comprehensive evaluation metrics (Recall@K, Precision@K, NDCG, MAP, MRR)
+- ✅ FAISS-based approximate nearest neighbor search
+- ✅ Multi-task learning (CTR + Rating prediction)
+- ✅ Modular, production-ready codebase
+- ✅ W&B integration for experiment tracking
+- ✅ TensorBoard logging
 
 ---
 
 ## 📂 Project Structure
 
 ```
-.
-├── enterprise_recsys.py       # Core system code (retrieval, ranking, metrics, trainer)
-├── processed_data.pkl         # Preprocessed dataset (train/val/test splits)
-├── requirements.txt           # Dependencies
-├── app/                       # FastAPI app for deployment
-│   ├── main.py                # FastAPI entrypoint
-│   ├── Dockerfile             # Docker config
-│   └── requirements.txt       # API dependencies
-└── README.md                  # Project documentation
+recommendation-system/
+├── README.md                    # Project documentation
+├── LICENSE                      # MIT License
+├── requirements.txt             # Python dependencies
+├── .gitignore                   # Git ignore rules
+│
+├── data/                        # Data directory
+│   ├── raw/                     # Raw MovieLens dataset
+│   │   ├── movies.dat
+│   │   ├── ratings.dat
+│   │   ├── users.dat
+│   │   └── README
+│   └── processed/               # Preprocessed data (gitignored)
+│       └── processed_data.pkl
+│
+├── src/                         # Source code package
+│   ├── __init__.py              # Package initialization
+│   ├── config.py                # Model configuration
+│   ├── models.py                # Model architectures (DCN, MultiTower)
+│   ├── data_processing.py       # Data loading and feature engineering
+│   ├── evaluation.py            # Metrics and callbacks
+│   ├── trainer.py               # Training orchestration
+│   └── preprocessing.py         # Dataset preprocessing pipeline
+│
+├── scripts/                     # Executable scripts
+│   └── train.py                 # Training entrypoint
+│
+├── notebooks/                   # Jupyter notebooks for analysis
+│   ├── 01_exploratory_data_analysis.ipynb
+│   └── 02_basic_analysis.ipynb
+│
+├── outputs/                     # Training outputs (gitignored)
+│   ├── models/                  # Saved models
+│   ├── logs/                    # Training logs
+│   └── metrics/                 # Evaluation results
+│
+└── main_files/                  # Legacy code (to be cleaned up)
+    ├── recommendation_system.py
+    └── preprocessing.py
 ```
 
 ---
 
 ## 🗂 Dataset
 
-We use **MovieLens** (100k/1M) or any implicit feedback dataset.
+This project uses the **MovieLens** dataset (1M ratings). The dataset includes:
+- User ratings for movies
+- Movie metadata (title, genres)
+- User demographics (age, gender, occupation)
 
-### Preprocessing (via DataProcessor)
-
-The preprocessing pipeline includes:
-- Convert IDs to strings
-- Extract time features (hour, day_of_week, is_weekend)
-- Compute user aggregates (avg rating, count, std)
-- Compute item aggregates (popularity, avg rating)
-- Scale numerical features
-
-### Loading Preprocessed Data
-
-A preprocessed dataset is included: `processed_data.pkl`
-
-```python
-import pickle
-
-with open("processed_data.pkl", "rb") as f:
-    data = pickle.load(f)
-
-train_df, val_df, test_df = data["train"], data["val"], data["test"]
-```
+### Data Splits
+- **Training**: 80% (temporal)
+- **Validation**: 10% (temporal)
+- **Testing**: 10% (temporal)
 
 ---
 
-## ⚙️ Training Pipeline
+## ⚙️ Installation
 
-### Retrieval (MultiTower)
-- User & Item towers produce embeddings in a shared space
-- Similarity = dot product
-- Loss = sampled softmax with negative sampling
-
-### Ranking (DCN)
-- Deep & Cross Network learns explicit + nonlinear feature interactions
-- Outputs CTR / rating prediction
-- Loss = MSE (ratings) + BCE (CTR)
-
-### Negative Sampling
-- **Random** → uniform negatives
-- **Hard** → popular unseen items
-- **Mixed** → hybrid approach
-
-### Multi-task Objective
-
-```
-L = L_retrieval + α * L_rating + β * L_ctr
-```
-
-### Evaluation Metrics
-- **Retrieval**: Recall@K, Precision@K, MAP, MRR, NDCG
-- **Catalog**: Coverage, Diversity
-
----
-
-## 📊 Metrics
-
-| Metric | Purpose |
-|--------|---------|
-| **Recall@K** | Fraction of relevant items retrieved |
-| **Precision@K** | Fraction of retrieved items that are relevant |
-| **NDCG@K** | Rank-sensitive relevance measure |
-| **MAP@K** | Average precision across ranks |
-| **MRR** | Rank of first relevant item |
-| **Coverage** | Fraction of items exposed in recommendations |
-| **Diversity** | Item dissimilarity in a recommendation list |
-
-### Example Formulas
-
-```
-DCG@k = Σ (2^rel_i − 1) / log2(i+1)
-
-nDCG@k = DCG@k / IDCG@k
-
-MRR = average(1 / rank_of_first_relevant_item)
-```
-
----
-
-## 🧪 Usage
-
-### 1️⃣ Install Requirements
-
+### 1. Clone the Repository
 ```bash
+git clone <repository-url>
+cd recommendation-system
+```
+
+### 2. Install Dependencies
+```bash
+# Create virtual environment (optional but recommended)
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install requirements
 pip install -r requirements.txt
 ```
 
-### 2️⃣ Train the Model
+### 3. (Optional) Install GPU Support
+```bash
+# For FAISS GPU support
+pip install faiss-gpu
+
+# Verify TensorFlow GPU
+python -c "import tensorflow as tf; print('GPU Available:', len(tf.config.list_physical_devices('GPU')) > 0)"
+```
+
+---
+
+## 🚀 Quick Start
+
+### Step 1: Preprocess the Data
+
+```bash
+python -m src.preprocessing \
+    --data_dir data/raw \
+    --output data/processed/processed_data.pkl
+```
+
+### Step 2: Train the Model
+
+```bash
+python scripts/train.py \
+    --data data/processed/processed_data.pkl \
+    --output_dir outputs/models/run_001 \
+    --embedding_dim 128 \
+    --batch_size 4096 \
+    --epochs 5 \
+    --learning_rate 0.01 \
+    --negative_sampling mixed
+```
+
+### Step 3: View Results
+
+Training artifacts will be saved to `outputs/models/run_001/`:
+- `best_model.keras` - Best model checkpoint
+- `encoder.keras` - Encoder model for inference
+- `faiss.idx` - FAISS index for fast retrieval
+- `training_log.csv` - Training metrics per epoch
+- `metrics.json` - Final evaluation metrics
+- `logs/` - TensorBoard logs
+
+View with TensorBoard:
+```bash
+tensorboard --logdir outputs/models/run_001/logs
+```
+
+---
+
+## 📊 Model Architecture
+
+### Retrieval Model (Two-Tower)
+```
+User Tower:                    Item Tower:
+  User ID Embedding              Item ID Embedding
+  + Feature Embeddings           + Feature Embeddings
+       ↓                              ↓
+  Dense(256) + BN + Dropout      Dense(256) + BN + Dropout
+       ↓                              ↓
+  Dense(128) + BN + Dropout      Dense(128) + BN + Dropout
+       ↓                              ↓
+  Dense(128)                     Dense(128)
+       ↓                              ↓
+  User Embedding ────────────→ Dot Product Similarity
+```
+
+### Ranking Model (DCN)
+```
+[User Emb || Item Emb]
+       ↓
+Deep & Cross Network
+  ├─ Cross Layers (3x)
+  └─ Deep Layers [256, 128, 64]
+       ↓
+    Concat
+       ↓
+  ├─ Rating Head (MSE)
+  └─ CTR Head (BCE)
+```
+
+### Multi-Task Loss
+```
+L_total = L_retrieval + α * L_rating + β * L_ctr
+```
+
+---
+
+## 📈 Evaluation Metrics
+
+| Metric | Description |
+|--------|-------------|
+| **Recall@K** | Fraction of relevant items retrieved in top-K |
+| **Precision@K** | Fraction of top-K items that are relevant |
+| **NDCG@K** | Normalized Discounted Cumulative Gain (rank-aware) |
+| **MAP@K** | Mean Average Precision across all ranks |
+| **MRR** | Mean Reciprocal Rank of first relevant item |
+| **Coverage** | Fraction of catalog items recommended |
+| **Diversity** | Uniqueness of items in recommendation lists |
+
+---
+
+## 🔧 Configuration
+
+### Key Hyperparameters
+
+Edit `src/config.py` or pass arguments to `scripts/train.py`:
 
 ```python
-import enterprise_recsys as recsys
-import pickle
-
-# Load preprocessed data
-with open("processed_data.pkl", "rb") as f:
-    data = pickle.load(f)
-
-train_df, val_df, test_df = data["train"], data["val"], data["test"]
-
-# Configure model
-config = recsys.ModelConfig(
-    embedding_dim=64,
-    user_tower_dims=[128, 64],
-    item_tower_dims=[128, 64],
-    negative_sampling_strategy="mixed",
-    ctr_weight=1.0,
-    rating_weight=0.5,
-    learning_rate=1e-3
+ModelConfig(
+    # Architecture
+    embedding_dim=128,              # Embedding dimension
+    user_tower_dims=[256, 128],     # User tower architecture
+    item_tower_dims=[256, 128],     # Item tower architecture
+    cross_layers=3,                 # DCN cross layers
+    dnn_dims=[256, 128, 64],        # DCN deep layers
+    
+    # Training
+    batch_size=4096,
+    learning_rate_retrieval=0.01,
+    epochs_retrieval=5,
+    
+    # Negative Sampling
+    negative_sampling_strategy="mixed",  # random, hard, mixed
+    num_hard_negatives=5,
+    num_random_negatives=50,
+    
+    # Multi-task weights
+    ctr_weight=0.3,
+    rating_weight=0.7
 )
-
-# Train
-trainer = recsys.ProductionTrainer(config)
-trainer.fit(train_df, val_df)
-
-# Evaluate
-metrics = trainer.evaluate(test_df)
-print(metrics)
-```
-
-### 3️⃣ Get Recommendations
-
-```python
-recs = trainer.recommend(user_id="42", k=10)
-print(recs)
 ```
 
 ---
 
-## 🌐 Deployment
+## 🎯 Advanced Usage
 
-### FastAPI App (`app/main.py`)
-
-```python
-from fastapi import FastAPI
-import pickle
-import enterprise_recsys as recsys
-
-app = FastAPI()
-
-# Load data and train model
-with open("processed_data.pkl", "rb") as f:
-    data = pickle.load(f)
-train_df, val_df, test_df = data["train"], data["val"], data["test"]
-
-config = recsys.ModelConfig(embedding_dim=64)
-trainer = recsys.ProductionTrainer(config)
-trainer.fit(train_df, val_df)
-
-@app.get("/recommend/{user_id}")
-def recommend(user_id: str, k: int = 10):
-    recs = trainer.recommend(user_id=user_id, k=k)
-    return {"user_id": user_id, "recommendations": recs}
-```
-
-### Dockerfile (`app/Dockerfile`)
-
-```dockerfile
-FROM python:3.9-slim
-
-WORKDIR /app
-
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-
-COPY . .
-
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
-```
-
-### Build & Run
+### Custom Training with W&B
 
 ```bash
-docker build -t recsys-app .
-docker run -p 8000:8000 recsys-app
+python scripts/train.py \
+    --data data/processed/processed_data.pkl \
+    --output_dir outputs/models/experiment_001 \
+    --use_wandb \
+    --embedding_dim 256 \
+    --epochs 10
 ```
 
-### Test API
+### Distributed Training (Multi-GPU)
 
 ```bash
-curl http://localhost:8000/recommend/42?k=10
+python scripts/train.py \
+    --data data/processed/processed_data.pkl \
+    --output_dir outputs/models/distributed_run \
+    --distributed_strategy mirrored \
+    --batch_size 8192
+```
+
+### Hyperparameter Tuning
+
+```bash
+# Example: Test different negative sampling strategies
+for strategy in random hard mixed; do
+    python scripts/train.py \
+        --data data/processed/processed_data.pkl \
+        --output_dir outputs/models/neg_sampling_${strategy} \
+        --negative_sampling ${strategy}
+done
 ```
 
 ---
 
-## 🛠 Future Work
+## 📝 Code Organization
 
-- [ ] Add diversity using item embeddings (cosine dissimilarity)
-- [ ] Integrate FAISS/HNSWlib for large-scale retrieval
-- [ ] Extend with session-based (RNN/Transformer) models
-- [ ] Deploy to Kubernetes for scaling
+### Source Modules
+
+- **`src/config.py`**: Configuration dataclass with all hyperparameters
+- **`src/models.py`**: Model architectures (DeepCrossNetwork, MultiTowerModel, MultiTaskModel)
+- **`src/data_processing.py`**: Data loading, feature engineering, negative sampling
+- **`src/evaluation.py`**: Evaluation metrics and custom callbacks
+- **`src/trainer.py`**: Training orchestration and artifact management
+- **`src/preprocessing.py`**: MovieLens data preprocessing pipeline
+
+### Scripts
+
+- **`scripts/train.py`**: Main training entrypoint with CLI arguments
 
 ---
 
-## 🏆 Summary
+## 🐛 Troubleshooting
 
-This project provides an **enterprise-ready recommender system**:
+### Out of Memory (OOM)
+```bash
+# Reduce batch size
+python scripts/train.py --batch_size 2048 ...
 
-✅ Retrieval with MultiTower embeddings  
-✅ Ranking with DCN  
-✅ Robust evaluation metrics  
-✅ Ready for deployment via FastAPI + Docker  
-✅ Designed to scale to MAANG/NVIDIA-level production workloads
+# Use mixed precision (automatic with GPU)
+# Already enabled when GPU is detected
+```
+
+### Slow Training
+```bash
+# Increase batch size (if you have memory)
+python scripts/train.py --batch_size 8192 ...
+
+# Reduce model complexity
+python scripts/train.py --embedding_dim 64 --cross_layers 2 ...
+```
+
+### Import Errors
+```bash
+# Make sure you're in the project root
+cd /path/to/recommendation-system
+
+# Install in development mode (optional)
+pip install -e .
+```
+
+---
+
+## 🛠 Future Enhancements
+
+- [ ] Add REST API with FastAPI
+- [ ] Add Docker containerization
+- [ ] Implement online learning capabilities
+- [ ] Add diversity constraints in ranking
+- [ ] Session-based recommendations (RNN/Transformer)
+- [ ] A/B testing framework
+- [ ] Deployment to Kubernetes
 
 ---
 
 ## 📄 License
-MIT License
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
+---
 
 ## 🤝 Contributing
+
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
+## 📚 References
+
+- [Deep & Cross Network (DCN)](https://arxiv.org/abs/1708.05123)
+- [Two-Tower Models for Retrieval](https://research.google/pubs/pub48840/)
+- [TensorFlow Recommenders](https://www.tensorflow.org/recommenders)
+- [FAISS](https://github.com/facebookresearch/faiss)
+
+---
+
+## 📧 Contact
+
+For questions or suggestions, please open an issue on GitHub.
