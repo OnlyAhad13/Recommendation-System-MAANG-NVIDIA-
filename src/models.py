@@ -192,5 +192,10 @@ class MultiTaskModel(tfrs.models.Model):
                 labels = tf.expand_dims(labels, -1)
             ctr_loss = self.ctr_task(labels, pred['ctr_prediction'])
         
-        return ret_loss + self.config.rating_weight * rating_loss + self.config.ctr_weight * ctr_loss
+        # Weighted combination - retrieval is prioritized!
+        total_loss = (self.config.retrieval_weight * ret_loss + 
+                     self.config.rating_weight * rating_loss + 
+                     self.config.ctr_weight * ctr_loss)
+        
+        return total_loss
 
