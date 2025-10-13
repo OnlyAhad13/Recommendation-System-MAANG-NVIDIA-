@@ -11,14 +11,14 @@ class ModelConfig:
     """Configuration for the recommendation model."""
     
     # Embedding dimensions (smaller for easier retrieval learning)
-    embedding_dim: int = 64  # Reduced from 128
+    embedding_dim: int = 64 
     user_tower_dims: List[int] = None
     item_tower_dims: List[int] = None
     
     # DCN parameters (simpler for retrieval focus)
-    cross_layers: int = 1  # Reduced from 2
+    cross_layers: int = 1 
     dnn_dims: List[int] = None
-    dropout_rate: float = 0.3  # Reduced slightly
+    dropout_rate: float = 0.3
     l2_reg: float = 1e-4
     
     # Training parameters

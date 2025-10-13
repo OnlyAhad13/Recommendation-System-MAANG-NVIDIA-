@@ -10,6 +10,7 @@ import tensorflow_recommenders as tfrs
 from .config import ModelConfig
 
 
+@keras.utils.register_keras_serializable()
 class DeepCrossNetwork(keras.Model):
     """Deep & Cross Network for feature interaction learning."""
     
@@ -60,6 +61,7 @@ class DeepCrossNetwork(keras.Model):
         return tf.concat([xl, deep_out], axis=1)
 
 
+@keras.utils.register_keras_serializable()
 class MultiTowerModel(keras.Model):
     """Two-tower architecture for user and item embeddings."""
     
@@ -128,6 +130,7 @@ class MultiTowerModel(keras.Model):
         return {'user_embedding': user_emb, 'item_embedding': item_emb}
 
 
+@keras.utils.register_keras_serializable()
 class MultiTaskModel(tfrs.models.Model):
     """Multi-task model combining retrieval and ranking."""
     
