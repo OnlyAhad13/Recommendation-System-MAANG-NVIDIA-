@@ -12,8 +12,8 @@ if ! python -c "import fastapi" 2>/dev/null; then
 fi
 
 # Check if model exists
-if [ ! -f "outputs/models/recsys_output/encoder.keras" ]; then
-    echo "❌ Model not found at: outputs/models/recsys_output/"
+if [ ! -f "outputs/models/experiment_001/encoder.keras" ]; then
+    echo "❌ Model not found at: outputs/models/experiment_001/"
     echo "Please train a model first or update MODEL_DIR in app/model_service.py"
     exit 1
 fi

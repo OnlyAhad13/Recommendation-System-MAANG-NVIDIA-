@@ -14,7 +14,7 @@ pip install -r requirements.txt
 python scripts/preprocess.py --data_dir data/raw --output data/processed/processed_data.pkl
 
 # 3. Train model
-python scripts/train.py --data data/processed/processed_data.pkl --output_dir outputs/models/run_001 --epochs 5
+python scripts/train.py --data data/processed/processed_data.pkl --output_dir outputs/models/experiment_001 --epochs 5
 ```
 
 ---

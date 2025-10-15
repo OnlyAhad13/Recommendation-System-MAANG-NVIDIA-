@@ -35,7 +35,7 @@ class SimpleRecommendationService:
                     vocabs = json.load(f)
                     self.user_vocab = vocabs['users']
                     self.item_vocab = vocabs['items']
-                logger.info(f"✅ Vocabularies loaded: {len(self.user_vocab)} users, {len(self.item_vocab)} items")
+                logger.info(f"Vocabularies loaded: {len(self.user_vocab)} users, {len(self.item_vocab)} items")
             else:
                 raise FileNotFoundError(f"Vocabularies not found at {vocab_path}")
             
@@ -44,16 +44,16 @@ class SimpleRecommendationService:
             if config_path.exists():
                 with open(config_path, 'r') as f:
                     self.config = json.load(f)
-                logger.info("✅ Config loaded")
+                logger.info("Config loaded")
             
             # Create simple embeddings (random for now - in production, load from model)
             embedding_dim = self.config.get('embedding_dim', 64) if self.config else 64
             self.item_embeddings = np.random.randn(len(self.item_vocab), embedding_dim)
             
-            logger.info("✅ Simple model service ready")
+            logger.info("Simple model service ready")
             
         except Exception as e:
-            logger.error(f"❌ Failed to load model: {e}")
+            logger.error(f"Failed to load model: {e}")
             raise
     
     def is_ready(self) -> bool:

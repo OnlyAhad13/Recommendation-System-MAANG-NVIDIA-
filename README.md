@@ -16,20 +16,22 @@ A production-ready recommendation system using **two-tower retrieval** and **Dee
 - ✅ Comprehensive evaluation metrics (Recall@K, Precision@K, NDCG, MAP, MRR)
 - ✅ FAISS-based approximate nearest neighbor search
 - ✅ Multi-task learning (CTR + Rating prediction)
+- ✅ Class weights for handling imbalanced datasets
+- ✅ FastAPI REST API with Docker support
 - ✅ Modular, production-ready codebase
 - ✅ W&B integration for experiment tracking
-- ✅ TensorBoard logging
 
 ---
 
 ## 📂 Project Structure
 
 ```
-recommendation-system/
+Recommendation System/
 ├── README.md                    # Project documentation
 ├── LICENSE                      # MIT License
 ├── requirements.txt             # Python dependencies
-├── .gitignore                   # Git ignore rules
+├── setup.py                     # Package setup
+├── QUICK_START.md              # Quick start guide
 │
 ├── data/                        # Data directory
 │   ├── raw/                     # Raw MovieLens dataset
@@ -49,8 +51,21 @@ recommendation-system/
 │   ├── trainer.py               # Training orchestration
 │   └── preprocessing.py         # Dataset preprocessing pipeline
 │
+├── app/                         # FastAPI application
+│   ├── __init__.py              # Package initialization
+│   ├── main.py                  # FastAPI main application
+│   ├── recommendation_service.py # Recommendation service
+│   ├── simple_model_loader.py   # Simple model loader
+│   ├── model_service.py         # Model service
+│   ├── start_api.sh             # API startup script
+│   ├── test_api.py              # API testing script
+│   ├── docker-compose.yml       # Docker configuration
+│   ├── Dockerfile               # Docker image
+│   └── requirements.txt         # API dependencies
+│
 ├── scripts/                     # Executable scripts
-│   └── train.py                 # Training entrypoint
+│   ├── train.py                 # Training entrypoint
+│   └── preprocess.py            # Data preprocessing script
 │
 ├── notebooks/                   # Jupyter notebooks for analysis
 │   ├── 01_exploratory_data_analysis.ipynb
@@ -58,12 +73,11 @@ recommendation-system/
 │
 ├── outputs/                     # Training outputs (gitignored)
 │   ├── models/                  # Saved models
+│   │   └── experiment_001/      # Experiment outputs
 │   ├── logs/                    # Training logs
 │   └── metrics/                 # Evaluation results
 │
-└── main_files/                  # Legacy code (to be cleaned up)
-    ├── recommendation_system.py
-    └── preprocessing.py
+└── configs/                     # Configuration files
 ```
 
 ---
@@ -116,7 +130,7 @@ python -c "import tensorflow as tf; print('GPU Available:', len(tf.config.list_p
 ### Step 1: Preprocess the Data
 
 ```bash
-python -m src.preprocessing \
+python scripts/preprocess.py \
     --data_dir data/raw \
     --output data/processed/processed_data.pkl
 ```
@@ -126,7 +140,7 @@ python -m src.preprocessing \
 ```bash
 python scripts/train.py \
     --data data/processed/processed_data.pkl \
-    --output_dir outputs/models/run_001 \
+    --output_dir outputs/models/experiment_001 \
     --embedding_dim 128 \
     --batch_size 4096 \
     --epochs 5 \
@@ -134,9 +148,28 @@ python scripts/train.py \
     --negative_sampling mixed
 ```
 
-### Step 3: View Results
+### Step 3: Start the API Server
 
-Training artifacts will be saved to `outputs/models/run_001/`:
+```bash
+cd app
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+### Step 4: Test the API
+
+```bash
+# Health check
+curl http://localhost:8000/health
+
+# Get recommendations for a user
+curl -X POST "http://localhost:8000/recommendations" \
+     -H "Content-Type: application/json" \
+     -d '{"user_id": 1001, "num_recommendations": 10}'
+```
+
+### Step 5: View Results
+
+Training artifacts will be saved to `outputs/models/experiment_001/`:
 - `best_model.keras` - Best model checkpoint
 - `encoder.keras` - Encoder model for inference
 - `faiss.idx` - FAISS index for fast retrieval
@@ -146,7 +179,86 @@ Training artifacts will be saved to `outputs/models/run_001/`:
 
 View with TensorBoard:
 ```bash
-tensorboard --logdir outputs/models/run_001/logs
+tensorboard --logdir outputs/models/experiment_001/logs
+```
+
+---
+
+## 🌐 API Documentation
+
+### FastAPI Endpoints
+
+The recommendation system includes a FastAPI server with the following endpoints:
+
+#### Health Check
+```http
+GET /health
+```
+Returns the health status of the API.
+
+#### Get Recommendations
+```http
+POST /recommendations
+Content-Type: application/json
+
+{
+    "user_id": 1,
+    "num_recommendations": 10
+}
+```
+
+**Response:**
+```json
+{
+    "user_id": 1,
+    "recommendations": [
+        {"item_id": 123, "score": 0.95},
+        {"item_id": 456, "score": 0.89}
+    ],
+    "num_recommendations": 10
+}
+```
+
+#### Get Similar Items
+```http
+POST /similar_items
+Content-Type: application/json
+
+{
+    "item_id": 123,
+    "num_similar": 5
+}
+```
+
+### Running the API
+
+#### Development Mode
+```bash
+cd app
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+#### Production Mode
+```bash
+cd app
+uvicorn main:app --host 0.0.0.0 --port 8000 --workers 4
+```
+
+#### Using Docker
+```bash
+cd app
+docker-compose up --build
+```
+
+### API Testing
+
+Test the API endpoints:
+```bash
+# Run the test script
+python app/test_api.py
+
+# Or test manually
+curl http://localhost:8000/health
 ```
 
 ---
@@ -219,7 +331,7 @@ ModelConfig(
     dnn_dims=[256, 128, 64],        # DCN deep layers
     
     # Training
-    batch_size=4096,
+    batch_size=2048,
     learning_rate_retrieval=0.01,
     epochs_retrieval=5,
     
@@ -230,7 +342,10 @@ ModelConfig(
     
     # Multi-task weights
     ctr_weight=0.3,
-    rating_weight=0.7
+    rating_weight=0.7,
+    
+    # Class weights for imbalanced datasets
+    use_class_weights=True,  # Automatically calculated for balanced training
 )
 ```
 
@@ -245,8 +360,8 @@ python scripts/train.py \
     --data data/processed/processed_data.pkl \
     --output_dir outputs/models/experiment_001 \
     --use_wandb \
-    --embedding_dim 256 \
-    --epochs 10
+    --embedding_dim 128 \
+    --epochs 20
 ```
 
 ### Distributed Training (Multi-GPU)
@@ -323,13 +438,16 @@ pip install -e .
 
 ## 🛠 Future Enhancements
 
-- [ ] Add REST API with FastAPI
-- [ ] Add Docker containerization
+- [x] Add REST API with FastAPI
+- [x] Add Docker containerization
 - [ ] Implement online learning capabilities
 - [ ] Add diversity constraints in ranking
 - [ ] Session-based recommendations (RNN/Transformer)
 - [ ] A/B testing framework
 - [ ] Deployment to Kubernetes
+- [ ] Add model versioning and A/B testing
+- [ ] Implement real-time feature serving
+- [ ] Add monitoring and alerting
 
 ---
 

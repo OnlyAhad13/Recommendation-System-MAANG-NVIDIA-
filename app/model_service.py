@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 class RecommendationService:
     """Service for loading model and generating recommendations."""
     
-    def __init__(self, model_dir: str = "outputs/models/my_model"):
+    def __init__(self, model_dir: str = "outputs/models/experiment_001"):
         self.model_dir = Path(model_dir)
         self.model = None
         self.user_vocab = None

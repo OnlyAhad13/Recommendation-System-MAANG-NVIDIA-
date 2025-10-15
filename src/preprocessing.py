@@ -9,7 +9,7 @@ import pickle
 from pathlib import Path
 
 
-def preprocessing_pipeline(ratings, movies, users, rating_threshold=3):
+def preprocessing_pipeline(ratings, movies, users, rating_threshold=4):
     """
     Complete preprocessing pipeline for MovieLens data.
     

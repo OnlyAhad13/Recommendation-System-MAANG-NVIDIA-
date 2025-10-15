@@ -52,7 +52,7 @@ def main():
     parser.add_argument(
         '--output_dir', 
         type=str, 
-        default='./outputs/models/run_001',
+        default='./outputs/models/experiment_001',
         help='Output directory for models and logs'
     )
     
@@ -60,13 +60,13 @@ def main():
     parser.add_argument(
         '--embedding_dim', 
         type=int, 
-        default=128,
+        default=64,
         help='Embedding dimension'
     )
     parser.add_argument(
         '--cross_layers', 
         type=int, 
-        default=3,
+        default=1,
         help='Number of cross layers in DCN'
     )
     
@@ -74,7 +74,7 @@ def main():
     parser.add_argument(
         '--batch_size', 
         type=int, 
-        default=4096,
+        default=2048,
         help='Training batch size'
     )
     parser.add_argument(
@@ -86,7 +86,7 @@ def main():
     parser.add_argument(
         '--learning_rate', 
         type=float, 
-        default=0.01,
+        default=0.001,
         help='Learning rate for retrieval task'
     )
     
@@ -100,13 +100,13 @@ def main():
     parser.add_argument(
         '--num_hard_negatives', 
         type=int, 
-        default=5,
+        default=20,
         help='Number of hard negatives'
     )
     parser.add_argument(
         '--num_random_negatives', 
         type=int, 
-        default=50,
+        default=30,
         help='Number of random negatives'
     )
     
@@ -114,13 +114,13 @@ def main():
     parser.add_argument(
         '--ctr_weight', 
         type=float, 
-        default=0.3,
+        default=0.2,
         help='Weight for CTR loss'
     )
     parser.add_argument(
         '--rating_weight', 
         type=float, 
-        default=0.7,
+        default=0.2,
         help='Weight for rating loss'
     )
     

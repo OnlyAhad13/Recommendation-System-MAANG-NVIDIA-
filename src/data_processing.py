@@ -16,9 +16,13 @@ logger = logging.getLogger(__name__)
 class DataProcessor:
     """Handles data loading, validation, and feature engineering."""
     
-    def __init__(self, config: ModelConfig):
+    def __init__(self, config):
         self.config = config
         self.feature_scalers = {}
+        # Cache for train-only statistics (prevent leakage)
+        self.train_user_genre_prefs = None
+        self.train_user_temporal_stats = None
+        self.train_item_temporal_stats = None
         
     def load_and_validate_data(self, pickle_path: str) -> Dict[str, Any]:
         """Load data from pickle file and validate structure."""
@@ -51,7 +55,7 @@ class DataProcessor:
     
     def engineer_features(self, df: pd.DataFrame, user_features: pd.DataFrame, 
                          item_features: pd.DataFrame, mode: str = 'train') -> pd.DataFrame:
-        """Engineer features from raw data."""
+        """Engineer features from raw data with advanced signals."""
         if df.empty:
             return df
         
@@ -73,61 +77,187 @@ class DataProcessor:
         df['user_id'] = df['user_id'].astype(str)
         df['movie_id'] = df['movie_id'].astype(str)
         
-        # Time features
+        # === BASIC TIME FEATURES ===
         if 'timestamp' in df.columns:
             try:
-                df['hour'] = pd.to_datetime(df['timestamp'], unit='s').dt.hour
-                df['day_of_week'] = pd.to_datetime(df['timestamp'], unit='s').dt.dayofweek
+                df['datetime'] = pd.to_datetime(df['timestamp'], unit='s')
+                df['hour'] = df['datetime'].dt.hour
+                df['day_of_week'] = df['datetime'].dt.dayofweek
                 df['is_weekend'] = (df['day_of_week'] >= 5).astype(int)
-            except:
-                pass
+                df['month'] = df['datetime'].dt.month
+            except Exception as e:
+                logger.warning(f"Failed to parse timestamps: {e}")
         
-        # User statistics
+        # === USER STATISTICS ===
         try:
             if 'rating' in df.columns:
                 user_stats = df.groupby('user_id').agg({
-                    'rating': ['count', 'mean', 'std'], 
+                    'rating': ['count', 'mean', 'std', 'min', 'max'], 
                     'movie_id': 'nunique'
                 }).fillna(0)
                 user_stats.columns = ['user_rating_count', 'user_avg_rating', 
-                                     'user_rating_std', 'user_unique_items']
+                                     'user_rating_std', 'user_min_rating', 
+                                     'user_max_rating', 'user_unique_items']
+                # User rating range (how diverse are their ratings?)
+                user_stats['user_rating_range'] = user_stats['user_max_rating'] - user_stats['user_min_rating']
             else:
                 user_stats = df.groupby('user_id').agg({'movie_id': ['count', 'nunique']}).fillna(0)
                 user_stats.columns = ['user_rating_count', 'user_unique_items']
+            
             df = df.merge(user_stats, left_on='user_id', right_index=True, how='left')
-        except:
-            pass
+        except Exception as e:
+            logger.warning(f"Failed to compute user stats: {e}")
         
-        # Item statistics
+        # === ITEM STATISTICS ===
         try:
             if 'rating' in df.columns:
                 item_stats = df.groupby('movie_id').agg({
-                    'rating': ['count', 'mean', 'std'], 
+                    'rating': ['count', 'mean', 'std', 'min', 'max'], 
                     'user_id': 'nunique'
                 }).fillna(0)
                 item_stats.columns = ['item_rating_count', 'item_avg_rating', 
-                                     'item_rating_std', 'item_unique_users']
+                                     'item_rating_std', 'item_min_rating',
+                                     'item_max_rating', 'item_unique_users']
+                # Item rating polarization
+                item_stats['item_rating_range'] = item_stats['item_max_rating'] - item_stats['item_min_rating']
             else:
                 item_stats = df.groupby('movie_id').agg({'user_id': ['count', 'nunique']}).fillna(0)
                 item_stats.columns = ['item_rating_count', 'item_unique_users']
+            
             df = df.merge(item_stats, left_on='movie_id', right_index=True, how='left')
-        except:
-            pass
+        except Exception as e:
+            logger.warning(f"Failed to compute item stats: {e}")
         
-        # Merge external features
+        # === ADVANCED TEMPORAL FEATURES ===
+        if 'timestamp' in df.columns and 'datetime' in df.columns:
+            try:
+                # User recency signals
+                user_temporal = df.groupby('user_id')['datetime'].agg(['min', 'max', 'count'])
+                user_temporal['user_activity_days'] = (user_temporal['max'] - user_temporal['min']).dt.days + 1
+                user_temporal['user_rating_velocity'] = user_temporal['count'] / user_temporal['user_activity_days'].replace(0, 1)
+                
+                # Days since user first/last active
+                df = df.merge(user_temporal[['min', 'max']], left_on='user_id', right_index=True, how='left', suffixes=('', '_user'))
+                df['days_since_user_first_active'] = (df['datetime'] - df['min']).dt.days
+                df['days_since_user_last_active'] = (df['datetime'].max() - df['max']).dt.days
+                df = df.drop(['min', 'max'], axis=1, errors='ignore')
+                
+                # Merge velocity
+                df = df.merge(user_temporal[['user_rating_velocity']], left_on='user_id', right_index=True, how='left')
+                
+                # Item temporal patterns
+                item_temporal = df.groupby('movie_id')['datetime'].agg(['min', 'max', 'count'])
+                item_temporal['item_age_days'] = (df['datetime'].max() - item_temporal['min']).dt.days
+                
+                # Recent popularity (last 90 days)
+                recent_cutoff = df['datetime'].max() - pd.Timedelta(days=90)
+                recent_item_counts = df[df['datetime'] > recent_cutoff].groupby('movie_id').size()
+                item_temporal['item_recent_popularity'] = recent_item_counts
+                item_temporal['item_recent_popularity'] = item_temporal['item_recent_popularity'].fillna(0)
+                item_temporal['item_popularity_trend'] = item_temporal['item_recent_popularity'] / item_temporal['count'].replace(0, 1)
+                
+                df = df.merge(item_temporal[['item_age_days', 'item_popularity_trend']], 
+                             left_on='movie_id', right_index=True, how='left')
+                
+                # Cache for val/test
+                if mode == 'train':
+                    self.train_user_temporal_stats = user_temporal
+                    self.train_item_temporal_stats = item_temporal
+                    
+            except Exception as e:
+                logger.warning(f"Failed to compute temporal features: {e}")
+        
+        # === USER-ITEM INTERACTION FEATURES ===
+        try:
+            # User rating consistency (inverse of std)
+            if 'user_rating_std' in df.columns:
+                df['user_rating_consistency'] = 1.0 / (1.0 + df['user_rating_std'])
+            
+            # Item rating polarization (high std = controversial)
+            if 'item_rating_std' in df.columns:
+                df['item_polarization'] = df['item_rating_std']
+            
+            # User-item popularity match
+            if 'user_rating_count' in df.columns and 'item_rating_count' in df.columns:
+                df['user_popularity_match'] = np.abs(
+                    np.log1p(df['user_rating_count']) - np.log1p(df['item_rating_count'])
+                )
+        except Exception as e:
+            logger.warning(f"Failed to compute interaction features: {e}")
+        
+        # === GENRE PREFERENCE FEATURES ===
+        if isinstance(item_features, pd.DataFrame) and not item_features.empty:
+            try:
+                # Get genre columns
+                genre_cols = [c for c in item_features.columns if c.startswith('genre_')]
+                
+                if genre_cols and mode == 'train':
+                    # Compute user genre preferences from training data only
+                    item_genres = item_features[['movie_id'] + genre_cols].copy()
+                    item_genres['movie_id'] = item_genres['movie_id'].astype(str)
+                    
+                    df_with_genres = df.merge(item_genres, on='movie_id', how='left')
+                    
+                    if 'rating' in df_with_genres.columns:
+                        # Weighted genre preference (higher ratings = stronger preference)
+                        user_genre_ratings = df_with_genres.groupby('user_id').apply(
+                            lambda x: pd.Series({
+                                col: (x[col] * x['rating']).sum() / x['rating'].sum() if x['rating'].sum() > 0 else 0
+                                for col in genre_cols
+                            })
+                        )
+                    else:
+                        # Simple genre preference (binary)
+                        user_genre_ratings = df_with_genres.groupby('user_id')[genre_cols].mean()
+                    
+                    self.train_user_genre_prefs = user_genre_ratings
+                
+                # Apply genre preferences
+                if self.train_user_genre_prefs is not None and genre_cols:
+                    item_genres = item_features[['movie_id'] + genre_cols].copy()
+                    item_genres['movie_id'] = item_genres['movie_id'].astype(str)
+                    df = df.merge(item_genres, on='movie_id', how='left', suffixes=('', '_item'))
+                    
+                    # Calculate user-item genre match
+                    def compute_genre_match(row):
+                        user_id = row['user_id']
+                        if user_id not in self.train_user_genre_prefs.index:
+                            return 0.0
+                        
+                        user_prefs = self.train_user_genre_prefs.loc[user_id]
+                        item_genres_vec = row[[c for c in genre_cols if c in row.index]].values
+                        
+                        # Dot product of user preferences and item genres
+                        match_score = np.dot(user_prefs.values, item_genres_vec)
+                        return match_score
+                    
+                    df['user_genre_match'] = df.apply(compute_genre_match, axis=1)
+                    
+                    # Drop genre columns after computing match
+                    df = df.drop(columns=[c for c in genre_cols if c in df.columns], errors='ignore')
+                    
+            except Exception as e:
+                logger.warning(f"Failed to compute genre features: {e}")
+        
+        # === MERGE EXTERNAL FEATURES ===
         for features, key_col, id_col in [(user_features, 0, 'user_id'), 
                                            (item_features, 0, 'movie_id')]:
             if isinstance(features, pd.DataFrame) and not features.empty:
                 try:
                     feat_copy = features.copy()
+                    # Exclude genre columns from item_features (already processed)
+                    if id_col == 'movie_id':
+                        genre_cols = [c for c in feat_copy.columns if c.startswith('genre_')]
+                        feat_copy = feat_copy.drop(columns=genre_cols, errors='ignore')
+                    
                     feat_copy.iloc[:, key_col] = feat_copy.iloc[:, key_col].astype(str)
                     df = df.merge(feat_copy, left_on=id_col, 
                                 right_on=feat_copy.columns[key_col], 
                                 how='left', suffixes=('', '_ext'))
-                except:
-                    pass
+                except Exception as e:
+                    logger.warning(f"Failed to merge external features: {e}")
         
-        # Scale numerical features
+        # === SCALE NUMERICAL FEATURES ===
         numeric_cols = [c for c in df.select_dtypes(include=[np.number]).columns 
                        if c not in ['user_id', 'movie_id', 'rating', 'y_implicit', 'timestamp']]
         
@@ -136,11 +266,16 @@ class DataProcessor:
                 if mode == 'train':
                     self.feature_scalers['numeric'] = StandardScaler()
                     df[numeric_cols] = self.feature_scalers['numeric'].fit_transform(df[numeric_cols])
+                    logger.info(f"Scaled {len(numeric_cols)} numerical features")
                 elif 'numeric' in self.feature_scalers:
                     df[numeric_cols] = self.feature_scalers['numeric'].transform(df[numeric_cols])
-            except:
-                pass
+            except Exception as e:
+                logger.warning(f"Failed to scale features: {e}")
         
+        # Drop datetime column (not needed for model)
+        df = df.drop(['datetime'], axis=1, errors='ignore')
+        
+        logger.info(f"Final feature count for {mode}: {len(df.columns)} columns")
         return df.fillna(0)
 
 

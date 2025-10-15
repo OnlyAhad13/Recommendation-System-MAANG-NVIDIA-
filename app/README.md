@@ -151,7 +151,7 @@ for rec in recommendations['recommendations']:
 Environment variables:
 
 ```bash
-MODEL_DIR=/app/outputs/models/recsys_output  # Path to model directory
+MODEL_DIR=/app/outputs/models/experiment_001  # Path to model directory
 LOG_LEVEL=INFO  # Logging level
 PORT=8000  # API port
 ```
@@ -177,7 +177,7 @@ docker-compose -f app/docker-compose.yml up
 # Production (with custom config)
 docker run -d \
   -p 8000:8000 \
-  -e MODEL_DIR=/app/outputs/models/recsys_output \
+  -e MODEL_DIR=/app/outputs/models/experiment_001 \
   -v $(pwd)/outputs:/app/outputs:ro \
   --name recsys-api \
   recsys-api:latest
